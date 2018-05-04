@@ -8,3 +8,4 @@
 - pv/pvc
 - storage（ceph/nfs）
 - prometheus
+- manifests(常用官方插件)
