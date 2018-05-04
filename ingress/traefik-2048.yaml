@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-2048
+  namespace: default
+spec:
+  rules:
+  - host: 2048.pf.co-mall
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: app-2048
+          servicePort: 80
+

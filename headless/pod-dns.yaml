@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox1
+  labels:
+    name: busybox
+spec:
+  hostname: busybox-1
+  subdomain: busybox-domain
+  containers:
+  - name: busybox
+    image: busybox
+    command:
+    - sleep
+    - "3600"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: busybox-domain
+spec:
+  selector:
+    name: busybox
+  clusterIP: None
+  ports:
+    - name: foo # Actually, no port is needed.
+      port: 1234 
+      targetPort: 1234

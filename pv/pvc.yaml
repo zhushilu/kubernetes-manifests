@@ -1,0 +1,15 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+   name: pvc-jenkins-comall-data-workspace
+   namespace: comall
+spec:
+   accessModes:
+#     - ReadWriteOnce
+     - ReadWriteMany
+   resources:
+     requests:
+       storage: 20Gi
+   selector:
+     matchLabels:
+       pv: pv-jenkins-comall-data-workspace

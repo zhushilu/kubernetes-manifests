@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-redis
+  namespace: comall
+  labels:
+    name: gitlab-redis
+spec:
+#  type: NodePort
+  selector:
+    name: gitlab-redis
+  ports:
+  - name: master-port
+    port: 6379
+    targetPort: 6379
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gitlab-redis
+  namespace: comall
+  labels:
+     name: gitlab-redis
+spec:
+   replicas: 1
+   template: 
+     metadata:
+       labels:
+         name: gitlab-redis
+     spec:
+       containers:
+       - name: master
+         image: kubeguide/redis-master
+         ports:
+         - containerPort: 6379

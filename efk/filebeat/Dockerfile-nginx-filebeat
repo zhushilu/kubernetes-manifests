@@ -1,0 +1,6 @@
+FROM  harbor.product.co-mall/library/nginx:1.11.5
+
+
+RUN  mkdir /opt/log
+ADD  nginx.conf   /etc/nginx/nginx.conf
+

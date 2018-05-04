@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: prometheus-core
+  namespace: monitoring
+  labels:
+    app: prometheus
+    component: core
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: prometheus-main
+      labels:
+        app: prometheus
+        component: core
+    spec:
+      serviceAccountName: prometheus-k8s
+      containers:
+      - name: prometheus
+        image: zhusl/prometheus:v2.2.1
+        args:
+          - --storage.tsdb.retention=12h
+          - --config.file=/etc/prometheus/prometheus.yaml
+          - --web.enable-lifecycle
+          - --storage.tsdb.no-lockfile 
+          - --query.max-concurrency=50
+        ports:
+        - name: webui
+          containerPort: 9090
+        resources:
+          requests:
+            cpu: 500m
+            memory: 5000M
+          limits:
+            cpu: 500m
+            memory: 5000M
+        volumeMounts:
+        - name: config-volume  # prometheus 配置文件挂载目录
+          mountPath: /etc/prometheus
+        - name: rules-volume   # 告警的规则存放路径
+          mountPath: /etc/prometheus-rules
+        - name: prometheus-data   # prometheus数据外挂目录
+          mountPath: /prometheus/data
+        - name: file-sd-configmap  # 使用file_sd_config的方式增加k8s外部服务，这里增加了etcd
+          mountPath: /opt/prometheus
+#        - name: etcd-certs  # 本来是给访问etcd使用证书的，但是一直失败所以就忽略证书检查了
+#          mountPath: /opt/etcd-certs
+      volumes:
+      - name: config-volume
+        configMap:
+          name: prometheus-core
+      - name: file-sd-configmap
+        configMap:
+          name: file-sd-configmap
+      - name: rules-volume
+        configMap:
+          name: prometheus-rules
+#      - name: etcd-certs
+#        secret:
+#          secretName: etcd-certs
+#      - name: prometheus-data
+#        emptyDir: {}
+      - name: prometheus-data  #  暂是配置的prometheus数据存储在内存中，实际使用时需要修改
+        emptyDir: 
+          medium: "Memory"

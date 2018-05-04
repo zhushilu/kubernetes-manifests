@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-system-kibana-logging
+  namespace: kube-system
+spec:
+  rules:
+  - host: kibana.pf.co-mall
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kibana-logging
+          servicePort: 5601
+

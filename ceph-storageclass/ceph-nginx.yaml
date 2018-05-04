@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ceph-nginx
+  namespace: comall
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: ceph-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: ceph-rbd-volume
+              mountPath: "/usr/share/nginx/html"
+      volumes:
+      - name: ceph-rbd-volume
+        persistentVolumeClaim:
+          claimName: ceph-pvc

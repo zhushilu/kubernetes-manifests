@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx2-log-pilot2
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx2-log-pilot
+    spec:
+      containers:
+      - image: harbor.product.co-mall/platform/nginx-filebeat
+#      - image: zhusl/nginx-filebeat:1.11.9
+        name : app
+        env:
+        - name: aliyun_logs_log-pilot-nginx
+          value: stdout
+        ports:
+        - containerPort: 80
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx2-log-pilog
+spec:
+  type: NodePort
+#  sessionAffinity: ClientIP
+  selector:
+    app: nginx2-log-pilot
+  ports:
+    - port: 80
+      nodePort: 30081
+

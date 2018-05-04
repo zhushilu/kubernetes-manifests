@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: prometheus-core-readonly
+  namespace: monitoring
+  labels:
+    app: prometheus-readonly
+    component: core-readonly
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: prometheus-main-readonly
+      labels:
+        app: prometheus-readonly
+        component: core-readonly
+    spec:
+      serviceAccountName: prometheus-k8s
+      containers:
+      - name: prometheus
+        image: zhusl/prometheus:v2.2.1
+        args:
+          - --config.file=/etc/prometheus/prometheus.yaml
+
+        ports:
+        - name: webui2
+          containerPort: 9090
+        resources:
+          requests:
+            cpu: 500m
+            memory: 5000M
+          limits:
+            cpu: 500m
+            memory: 5000M
+        volumeMounts:
+        - name: config-volume  # prometheus 配置文件挂载目录
+          mountPath: /etc/prometheus
+        - name: prometheus-data   # prometheus数据外挂目录
+          mountPath: /prometheus/data
+#        - name: etcd-certs  # 本来是给访问etcd使用证书的，但是一直失败所以就忽略证书检查了
+#          mountPath: /opt/etcd-certs
+      volumes:
+      - name: config-volume
+        configMap:
+          name: prometheus-core-readonly
+#      - name: etcd-certs
+#        secret:
+#          secretName: etcd-certs
+#      - name: prometheus-data
+#        emptyDir: {}
+      - name: prometheus-data  #  暂是配置的prometheus数据存储在内存中，实际使用时需要修改
+        emptyDir: 
+          medium: "Memory"

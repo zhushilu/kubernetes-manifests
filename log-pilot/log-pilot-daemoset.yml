@@ -1,0 +1,54 @@
+#apiVersion: apps/v1
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: log-pilot
+  namespace: kube-system
+  labels:
+    k8s-app: log-pilot
+    kubernetes.io/cluster-service: "true"
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: log-pilot
+        kubernetes.io/cluster-service: "true"
+        version: v1.22
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: log-pilot
+#        image: registry.cn-hangzhou.aliyuncs.com/acs-sample/log-pilot:0.9.1-fluentd
+#        image: harbor.product.co-mall/platform/log-pilot
+        image: registry.cn-hangzhou.aliyuncs.com/acs-sample/log-pilot:0.9.1-filebeat
+        env:
+          - name: "FILEBEAT_OUTPUT"
+            value: "elasticsearch"
+          - name: "ELASTICSEARCH_HOST"
+            value: "elasticsearch-logging" #changeme
+          - name: "ELASTICSEARCH_PORT"
+            value: "9200"  #changeme
+        volumeMounts:
+        - name: sock
+          mountPath: /var/run/docker.sock
+        - name: root
+          mountPath: /host
+          readOnly: true
+        - name: pos
+          mountPath: /pilot/pos
+        securityContext:
+          capabilities:
+            add:
+            - SYS_ADMIN
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: sock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: root
+        hostPath:
+          path: /
+      - name: pos
+        emptyDir: {}

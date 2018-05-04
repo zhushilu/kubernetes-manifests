@@ -1,0 +1,26 @@
+apiVersion: v1
+data:
+  wechat.tmpl: |
+    {{ define "wechat.default.message" }}
+    {{ if gt (len .Alerts.Firing) 0 }}
+    Alerts Firing:
+    {{ end }}
+    {{ if gt (len .Alerts.Resolved) 0 }}
+    Alerts Resolved:
+    {{ end }}
+    {{ range .Alerts }}
+    告警级别：{{ .Labels.severity }}
+    告警类型：{{ .Labels.alertname }}
+    告警POD：{{ .Labels.kubernetes_name }}
+    告警namespace：{{ .Labels.kubernetes_namespace }}
+    故障主机: {{ .Labels.instance }}
+    告警主题: {{ .Annotations.summary }}
+    告警详情: {{ .Annotations.description }}
+    ======
+    {{ end }}
+    {{ end }}
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: alertmanager-wechat
+  namespace: monitoring

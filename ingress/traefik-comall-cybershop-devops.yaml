@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-comall-cybershop-devops
+  namespace: comall
+spec:
+  rules:
+  - host: devops.pf.co-mall
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: cybershop-devops
+          servicePort: 8000
+

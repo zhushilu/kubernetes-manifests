@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-filebeat-elk
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-filebeat-elk
+    spec:
+      containers:
+      - image: harbor.product.co-mall/platform/filebeat:5.4.0
+#      - image: zhusl/filebeat:5.4.0
+        name: filebeat-dfdf
+        volumeMounts:
+        - name: app-logs
+          mountPath: /log
+        - name: filebeat-config
+          mountPath: /etc/filebeat/
+      - image: harbor.product.co-mall/platform/nginx-filebeat
+#      - image: zhusl/nginx-filebeat:1.11.9
+        name : appdfdfdf
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: app-logs
+          mountPath: /opt/log
+      volumes:
+      - name: app-logs
+        emptyDir: {}
+      - name: filebeat-config
+        configMap:
+          name: filebeat-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-filebeat-elk
+  labels:
+    app: nginx-filebeat-elk
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: nginx-filebeat-elk
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+data:
+  filebeat.yml: |
+    filebeat.prospectors:
+    - input_type: log
+      paths:
+        - "/log/*"
+        - "/log/usermange/common/*"
+    output.elasticsearch:
+      hosts: ["elasticsearch-logging.kube-system.svc.cluster.local:9200"]
+      username: "elastic"
+      password: "changeme"
+      index: "nginx-filebeat"

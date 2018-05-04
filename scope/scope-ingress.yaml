@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress
+  namespace: kube-system
+spec:
+  rules:
+    - host: scope.pf.co-mall
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: weave-scope-app
+            servicePort: 80

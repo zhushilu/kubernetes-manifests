@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-comall-jenkins
+  namespace: comall
+spec:
+  rules:
+  - host: jenkins-kube.pf.co-mall
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: jenkins
+          servicePort: 8080
+

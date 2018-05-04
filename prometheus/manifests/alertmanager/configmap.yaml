@@ -1,0 +1,102 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: alertmanager
+  namespace: monitoring
+data:
+  config.yml: |-
+    global:
+      # ResolveTimeout is the time after which an alert is declared resolved
+      # if it has not been updated.
+      resolve_timeout: 5m
+
+      # The smarthost and SMTP sender used for mail notifications.
+      # 邮件告警配置
+      smtp_smarthost: 'smtp.163.com:25'
+      smtp_from: 'zhushilu03@163.com'
+      smtp_auth_username: 'zhushilu03@163.com'
+      smtp_auth_password: 'zhushilu03'  #这个不能用密码登录，需要使用授权码登录
+      smtp_require_tls: false
+
+      # 微信告警全局配置 
+      wechat_api_url: "https://qyapi.weixin.qq.com/cgi-bin/" # 这个暂时不用改,照抄
+      wechat_api_secret: "0a_dCAOoNTZPYcwzjEuluZMx2ZNyi6eaNE8FuDj1nKI" #你的有权限的账号接入微信api的secret
+      wechat_api_corp_id: "ww36e3a5300c05a26c"  # 企业号的corp id 找企业号管理员可以获得
+
+      # The API URL to use for Slack notifications.
+      slack_api_url: 'https://hooks.slack.com/services/some/api/token'
+
+    # # The directory from which notification templates are read.
+    templates:
+    # - '/etc/alertmanager-templates/*.tmpl'
+    - '/etc/alertmanager-templates/wechat.tmpl'
+
+    # The root route on which each incoming alert enters.
+    route:
+
+      # The labels by which incoming alerts are grouped together. For example,
+      # multiple alerts coming in for cluster=A and alertname=LatencyHigh would
+      # be batched into a single group.
+
+      group_by: ['alertname', 'cluster', 'service']
+
+      # When a new group of alerts is created by an incoming alert, wait at
+      # least 'group_wait' to send the initial notification.
+      # This way ensures that you get multiple alerts for the same group that start
+      # firing shortly after another are batched together on the first
+      # notification.
+
+      group_wait: 30s
+
+      # When the first notification was sent, wait 'group_interval' to send a batch
+      # of new alerts that started firing for that group.
+
+      group_interval: 30s
+
+      # If an alert has successfully been sent, wait 'repeat_interval' to
+      # resend them.
+
+      #repeat_interval: 1m
+      repeat_interval: 15m
+
+      # A default receiver
+
+      # If an alert isn't caught by a route, send it to default.
+      receiver: wechat
+
+      # All the above attributes are inherited by all child routes and can
+      # overwritten on each.
+
+      # The child route trees.
+      routes:
+      # Send severity=slack alerts to slack.
+      - match:
+          severity: slack
+        receiver: slack_alert
+    receivers:
+    - name: 'default'
+      slack_configs:
+      - channel: '#alertmanager-test'
+        text: '<!channel>{{ template "slack.devops.text" . }}'
+        send_resolved: true
+
+    - name: 'wechat'
+      wechat_configs:
+      - send_resolved: true
+        corp_id: 'ww36e3a5300c05a26c'
+       # to_party: '1'
+        to_user: "@all"
+        to_party: ""
+        to_tag: "" 
+        agent_id: '1000002'
+    #    api_secret: '0a_dCAOoNTZPYcwzjEuluZMx2ZNyi6eaNE8FuDj1nKI'
+
+
+    - name: 'slack_alert'
+      webhook_configs:
+          - url: 'https://hook.bearychat.com/=bwAIR/prometheus/608b1e0192db9d183a67e90801fcf6d5'
+    #      - url: 'http://api.110monitor.com/alert/api/event/prometheus/8b55ef32-b603-03ff-1116-de8a6d9f25cf'
+            send_resolved: true
+    #  email_configs:
+    #  - to: '15010886673@139.com'
+    #  #  send_resolved: true

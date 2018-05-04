@@ -1,0 +1,96 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: jenkins
+  namespace: comall
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      serviceAccount: "jenkins-admin"
+      containers:
+      - name: jenkins
+#        image: harbor.product.co-mall/platform/jenkins:2.73.3
+        image: harbor.product.co-mall/platform/jenkins-comall:new-secret
+#私有镜像有稍许改动，作者的maven软连接有错误，参考dockerfile
+#        image: dustise/jenkins
+        env:
+        - name: ADMIN_USER
+          value: "comall"
+        - name: ADMIN_PASSWORD
+          value: "comall"
+        - name: JAVA_OPTS
+          value: "-Xms2048m -Xmx2548m -Xss1024K -XX:PermSize=512m -XX:MaxPermSize=512m"
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8081
+          protocol: TCP
+        volumeMounts:
+          - name: kubectl-cmd
+            mountPath: /usr/bin/kubectl
+          - name: jenkins-comall-data
+            mountPath: /data/jenkins
+          - name: jenkins-comall-m2
+            mountPath: /root/.m2
+          - name: maven-config
+            mountPath: /data/maven/conf
+          - name: comall-config
+            mountPath: /root/kube
+          - name: docker-cmd
+            mountPath: /usr/bin/docker
+          - name: docker-sock
+            mountPath: /var/run/docker.sock
+      volumes:
+#      - name: jenkins
+#        nfs:
+#          server: 10.211.55.5
+#          path: /var/data/nfs/ci/jenkins
+#          readOnly: false
+      - name: kubectl-cmd    # 挂载物理机上的kubectl命令行工具到jenkins内
+        hostPath:
+          path: /root/local/bin/kubectl
+      - name: docker-cmd     # 挂载docker到容器内部，这里如果docker使用rpm安装的可能会有依赖问题，我是二进制方式安装的
+        hostPath:
+          path: /root/local/bin/docker
+      - name: docker-sock    # docker sock文件目录挂载到jenkins内部
+        hostPath:
+          path: /run/docker.sock
+      - name: jenkins-comall-data   # jenkins数据目录保存到外部存储
+        persistentVolumeClaim:
+          claimName: pvc-jenkins-comall-data
+      - name: jenkins-comall-m2    # maven 本地Repository 也挂载到外部持久化目录，以免每次构建太慢
+        persistentVolumeClaim:
+          claimName: pvc-jenkins-comall-m2
+      - name: maven-config        # maven的配置文件settings.xml
+        configMap:
+          name: maven-config
+      - name: comall-config       # comall用户的kubeconfig，供kubectl使用
+        configMap:
+          name: comall-config
+
+
+      
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: jenkins
+  namespace: comall
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    nodePort: 32502
+    targetPort: 8080
+    port: 8080
+    name: web
+  - protocol: TCP
+    targetPort: 8081
+    port: 8081
+    name: service
+  selector:
+    app: jenkins

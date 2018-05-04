@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-whoami
+  namespace: default
+spec:
+  rules:
+  - host: whoami.pf.co-mall
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: whoami
+          servicePort: 80
+

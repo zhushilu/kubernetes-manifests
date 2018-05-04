@@ -1,0 +1,120 @@
+apiVersion: extensions/v1beta1
+kind: Deployment 
+metadata: 
+  name: kafka-deployment-1
+spec: 
+  replicas: 1
+  template: 
+    metadata: 
+      labels: 
+        name: kafka-1 
+    spec: 
+      containers: 
+        - name: kafka-1
+          image: kafka:alpine 
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: NODE_ID
+            value: "1"
+          - name: ZK_NODES
+            value: "zookeeper-1,zookeeper-2,zookeeper-3"
+          ports:
+          - containerPort: 9092
+
+---
+
+apiVersion: extensions/v1beta1 
+kind: Deployment
+metadata:
+  name: kafka-deployment-2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: kafka-2  
+    spec:
+      containers:
+        - name: kafka-2
+          image: kafka:alpine
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: NODE_ID
+            value: "2"
+          - name: ZK_NODES
+            value: "zookeeper-1,zookeeper-2,zookeeper-3"
+          ports:
+          - containerPort: 9092
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kafka-deployment-3
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: kafka-3  
+    spec:
+      containers:
+        - name: kafka-3
+          image: kafka:alpine
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: NODE_ID
+            value: "3"
+          - name: ZK_NODES
+            value: "zookeeper-1,zookeeper-2,zookeeper-3"
+          ports:
+          - containerPort: 9092
+
+---
+
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: kafka-1 
+  labels:
+    name: kafka-1
+spec: 
+  ports: 
+    - name: client
+      port: 9092
+      protocol: TCP
+  selector: 
+    name: kafka-1
+
+---
+
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: kafka-2
+  labels:
+    name: kafka-2
+spec: 
+  ports: 
+    - name: client
+      port: 9092
+      protocol: TCP
+  selector: 
+    name: kafka-2
+
+---
+
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: kafka-3
+  labels:
+    name: kafka-3
+spec: 
+  ports: 
+    - name: client
+      port: 9092
+      protocol: TCP
+  selector: 
+    name: kafka-3

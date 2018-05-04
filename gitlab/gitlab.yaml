@@ -1,0 +1,109 @@
+#需要提前穿建pvc，挂载gitlab数据目录，根据实际情况修改
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-gitlab
+  namespace: comall
+  labels:
+    app: docker-gitlab
+spec:
+  selector:
+    app: docker-gitlab
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    nodePort: 20080
+    targetPort: http
+  - name: ssh
+    port: 22
+    targetPort: ssh
+    nodePort: 20022
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: docker-gitlab
+  namespace: comall
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: docker-gitlab
+    spec:
+#      nodeSelector:
+#        gitlab: "true"
+      containers:
+      - name: gitlab
+        image: harbor.product.co-mall/library/gitlab:10.0.4
+#        image: sameersbn/gitlab:10.0.4
+        env:
+        - name: TZ
+          value: Asia/Shanghai
+        - name: GITLAB_TIMEZONE
+          value: Beijing
+        - name: GITLAB_SECRETS_DB_KEY_BASE
+          value: long-and-random-alphanumeric-string-11
+        - name: GITLAB_SECRETS_SECRET_KEY_BASE
+          value: long-and-random-alphanumeric-string-11
+        - name: GITLAB_SECRETS_OTP_KEY_BASE
+          value: long-and-random-alphanumeric-string-11
+
+
+        - name: GITLAB_HOST
+          value: gitlab.pf.co-mall
+        - name: GITLAB_PORT
+          value: "20080"
+        - name: GITLAB_SSH_PORT
+          value: "20022"
+        - name: GITLAB_PAGES_ENABLED
+          value: "true"
+        - name: GITLAB_PAGES_DOMAIN
+          value: pf.co-mall
+
+
+        - name: DB_TYPE
+          value: mysql
+        - name: DB_HOST
+          value: 10.90.26.9
+        - name: DB_NAME
+#          value: gitlabhq_production_k8s
+          value: gitlabhq_production_test2
+#          value: gitlabhq_k8s
+        - name: DB_USER
+          value: root
+        - name: DB_PASS
+          value: 123.com
+        - name: REDIS_HOST
+          value: gitlab-redis
+        - name: REDIS_PORT
+          value: "6379" 
+
+
+        ports:
+        - name: http
+          containerPort: 80
+        - name: ssh
+          containerPort: 22
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 180
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 300
+          timeoutSeconds: 10
+        volumeMounts:
+        - mountPath: /home/git/data
+          name: gitlab-data
+#    restartPolicy: Always
+      volumes:
+      - name: gitlab-data
+        persistentVolumeClaim:
+          claimName: pvc-gitlab-test
+

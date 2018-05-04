@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gitlab-runner
+  namespace: comall
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gitlab-runner
+    spec:
+      hostname: gitlab-runner
+      containers:
+      - name: runner
+        image: sgillespie/gitlab-runner
+        env:
+        - name: REGISTRATION_TOKEN
+          value: uzSy4ARyxDt7k8rW5XmB
+        - name: CI_SERVER_URL
+          value: "http://docker-gitlab:80/"
+        - name: RUNNER_EXECUTOR
+          value: shell
+        ports:
+        - containerPort: 80
+#        volumeMounts:
+#        - mountPath: /usr/share/nginx/html
+#          name: pvc-html
+#    restartPolicy: Always
+#      volumes:
+#      - name: pvc-html
+#        persistentVolumeClaim:
+#          claimName: pvc1
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-runner
+  namespace: comall
+spec:
+#  type: NodePort
+#  sessionAffinity: ClientIP
+  selector:
+    app: gitlab-runner
+  ports:
+    - port: 80
+#      nodePort: 30080
+
+

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk1
+  namespace: comall
+spec:
+  selector:
+    app: zk1
+  clusterIP: None
+  ports:
+    - name: foo # Actually, no port is needed.
+      port: 2181
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zk1
+  namespace: comall
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zk1
+    spec:
+      hostname: zk1
+      subdomain: zk1
+      containers:
+      - image: harbor.product.co-mall/library/zookeeper:3.4.9
+#      - image: zhusl/zookeeper:3.4.9
+        env:
+        - name: ZOO_MY_ID
+          value: "1"
+        - name: ZOO_SERVERS
+          value: "server.1=0.0.0.0:2888:3888 server.2=zk2.zk2.comall.svc.cluster.local:2888:3888 server.3=zk3.zk3.comall.svc.cluster.local:2888:3888"
+        name: zk

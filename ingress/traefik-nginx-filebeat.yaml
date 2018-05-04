@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-nginx-filebeat
+  namespace: default
+spec:
+  rules:
+  - host: filebeat.pf.co-mall
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: filebeat-test
+          servicePort: 80
+

@@ -1,0 +1,22 @@
+apiVersion: v1
+data:
+  prometheus.json: |+
+    [
+      {
+        "labels": {
+          "service": "etcd",
+          "job": "etcd"
+        },
+        "targets": [
+          "10.90.26.6:2379",
+          "10.90.26.7:2379",
+          "10.90.26.8:2379"
+        ]
+      }
+    ]
+
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: file-sd-configmap
+  namespace: monitoring

@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-default-nginx2-log-pilog
+  namespace: default
+spec:
+  rules:
+  - host: nginx-log2.pf.co-mall
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx2-log-pilog
+          servicePort: 80
+

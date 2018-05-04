@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-default-nginx-filebeat-elk
+  namespace: default
+spec:
+  rules:
+  - host: nginx-log1.pf.co-mall
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx-filebeat-elk
+          servicePort: 80
+

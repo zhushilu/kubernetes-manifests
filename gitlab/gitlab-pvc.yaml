@@ -1,0 +1,14 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+   name: pvc-gitlab-test
+   namespace: comall
+spec:
+   accessModes:
+     - ReadWriteOnce
+   resources:
+     requests:
+       storage: 20Gi
+   selector:
+     matchLabels:
+       pv: pv-gitlab-test

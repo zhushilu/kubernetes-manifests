@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      name: alertmanager
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+      - name: alertmanager
+#        image: quay.io/prometheus/alertmanager:v0.7.1
+#        image: zhusl/alertmanager:v0.7.1
+        image: prom/alertmanager:v0.13.0
+        args:
+          - '--config.file=/etc/alertmanager/config.yml'
+          - '--storage.path=/alertmanager'
+        ports:
+        - name: alertmanager
+          containerPort: 9093
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/alertmanager
+        - name: templates-volume-wechat
+          mountPath: /etc/alertmanager-templates
+        - name: alertmanager
+          mountPath: /alertmanager
+      volumes:
+      - name: config-volume
+        configMap:
+          name: alertmanager
+      - name: templates-volume
+        configMap:
+          name: alertmanager-templates
+      - name: templates-volume-wechat
+        configMap:
+          name: alertmanager-wechat
+      - name: alertmanager
+        emptyDir: {}

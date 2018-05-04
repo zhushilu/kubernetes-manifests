@@ -1,0 +1,51 @@
+apiVersion: v1
+data:
+  settings.xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<settings xmlns=\"http://maven.apache.org/SETTINGS/1.0.0\"
+    \n          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n          xsi:schemaLocation=\"http://maven.apache.org/SETTINGS/1.0.0
+    http://maven.apache.org/xsd/settings-1.0.0.xsd\">\n  <!-- localRepository\n          |
+    The path to the local repository maven will use to store artifacts.\n   |\n   |
+    Default: ${user.home}/.m2/repository\n  <localRepository>/path/to/local/repo</localRepository>\n
+    \ -->\n\n  <!-- interactiveMode\n          | This will determine whether maven
+    prompts you when it needs input. If set to false,\n   | maven will use a sensible
+    default value, perhaps based on some other setting, for\n   | the parameter in
+    question.\n   |\n   | Default: true\n  <interactiveMode>true</interactiveMode>\n
+    \ -->\n\n  <!-- offline\n          | Determines whether maven should attempt to
+    connect to the network when executing a build.\n   | This will have an effect
+    on artifact downloads, artifact deployment, and others.\n   |\n   | Default: false\n
+    \ <offline>false</offline>\n  -->\n\n  <!-- pluginGroups\n          | This is
+    a list of additional group identifiers that will be searched when resolving plugins
+    by their prefix, i.e.\n   | when invoking a command line like \"mvn prefix:goal\".
+    Maven will automatically add the group identifiers\n   | \"org.apache.maven.plugins\"
+    and \"org.codehaus.mojo\" if these are not already contained in the list.\n   |-->\n
+    \ <pluginGroups>\n      <!-- pluginGroup | Specifies a further group identifier
+    to use for plugin\n                  lookup. <pluginGroup>com.your.plugins</pluginGroup>
+    -->\n      <pluginGroup>org.mortbay.jetty</pluginGroup>\n      <pluginGroup>org.codehaus.cargo</pluginGroup>\n
+    \ </pluginGroups>\n\n\n  <proxies>\n\n  </proxies>\n  <servers>\n    <server>\n
+    \     <id>snapshots</id>\n      <username>admin</username>\n      <password>admin1234</password>\n
+    \   </server>\n    <server>\n      <id>releases</id>\n      <username>admin</username>\n
+    \     <password>admin1234</password>\n    </server>\n  </servers>\n  <!-- <servers>\n\n
+    \   <server>\n        <id>nexus</id>\n        <username>admin</username>\n        <password>admin1234</password>\n
+    \   </server>\n\n    <server>\n        <id>cybershop-snapshot</id>\n        <username>admin</username>\n
+    \       <password>admin1234</password>\n    </server>\n  </servers> -->\n\n\n
+    <!--  <mirrors>\n       \t <mirror>\n\t    <id>nexus</id>\n        <name>internal
+    nexus repository</name>\n        <url>http://172.31.1.155:8081/nexus/content/groups/public/</url>\n
+    \       <mirrorOf>*</mirrorOf>\n    </mirror>\n  </mirrors> -->\n  <mirrors>\n
+    \   <mirror>\n      <id>nexus</id>\n        <name>internal nexus repository</name>\n
+    \       <url>http://nexus3.km.co-mall/repository/maven-central/</url>\n        <mirrorOf>*</mirrorOf>\n
+    \   </mirror>\n  </mirrors>\n  \n  <profiles>\n      <profile>\n          <id>sonar</id>\n
+    \         <activation>\n              <activeByDefault>true</activeByDefault>\n
+    \         </activation>\n          <properties>\n              <sonar.host.url>\n
+    \                 <!-- http://10.201.201.204:31059/ -->\n                  http://cp-sonar.product.co-mall/\n
+    \             </sonar.host.url>\n              <sonar.login>admin</sonar.login>\n
+    \             <sonar.password>admin</sonar.password>\n          </properties>\n
+    \         <repositories>\n              <repository>\n                  <id>local-nexus</id>\n
+    \                 <url>http://172.31.1.155:8081/nexus/content/groups/public/</url>\n
+    \                 <releases>\n                      <enabled>true</enabled>\n
+    \                 </releases>\n                  <snapshots>\n                      <enabled>true</enabled>\n
+    \                 </snapshots>\n              </repository>\n          </repositories>\n
+    \     </profile>\n  </profiles>\n</settings>\n\n"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: maven-config
+  namespace: comall
