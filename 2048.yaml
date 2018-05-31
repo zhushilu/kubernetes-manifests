@@ -18,6 +18,9 @@ spec:
         image: alexwhen/docker-2048
         ports:
         - containerPort: 80
+        env:
+        - name: REVERSION
+          value: '02'
 
 
 ---
@@ -26,7 +29,8 @@ kind: Service
 metadata:
 #下面两条注释表示该pod是否加入到prometheus的source,并标明端口
   annotations:
-    prometheus.io/scrape: 'true'
+#    prometheus.io/scrape: 'true'
+    prometheus.io/probe: 'true'
     prometheus.io/port: '80'
   name: app-2048
 spec:
