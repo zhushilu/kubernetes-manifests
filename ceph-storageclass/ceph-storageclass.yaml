@@ -8,9 +8,9 @@ parameters:
   adminId: admin
 # 指定secret
   adminSecretName: ceph-secret
-  adminSecretNamespace: comall
+#  adminSecretNamespace: comall   
   pool: ceshi #此处默认是rbd池，生产上建议自己创建存储池隔离
-  userId: admin
+  userId: admin  # 对应secret的用户
   userSecretName: ceph-secret
 # 以下指定rbd创建时镜像和文件系统的参数
 #  fsType: xfs

@@ -66,15 +66,16 @@ spec:
         - name: DB_TYPE
           value: mysql
         - name: DB_HOST
-          value: 10.90.26.9
+          value: mysql-0.mysql.default.svc.cluster.local
         - name: DB_NAME
 #          value: gitlabhq_production_k8s
-          value: gitlabhq_production_test2
+#          value: gitlabhq_production_test2
+          value: gitlabhq_production
 #          value: gitlabhq_k8s
         - name: DB_USER
-          value: root
+          value: comall
         - name: DB_PASS
-          value: 123.com
+          value: comall
         - name: REDIS_HOST
           value: gitlab-redis
         - name: REDIS_PORT

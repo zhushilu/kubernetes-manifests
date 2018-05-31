@@ -70,7 +70,7 @@ spec:
           name: maven-config
       - name: comall-config       # comall用户的kubeconfig，供kubectl使用
         configMap:
-          name: comall-config
+          name: admin-config
 
 
       

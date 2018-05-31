@@ -1,0 +1,47 @@
+#  need to  replace  "PROJECT_NAME  NAMESPACE   APP_PORT   LIMIT_MAX_CPU  LIMIT_MAX_MEM"
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: PROJECT_NAME
+  namespace: NAMESPACE
+  labels:
+    app: PROJECT_NAME
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: PROJECT_NAME
+      labels:
+        app: PROJECT_NAME
+    spec:
+      containers:
+      - name: PROJECT_NAME
+        image: harbor.product.co-mall/library/memcached
+        imagePullPolicy: IfNotPresent
+        command:
+          - memcached
+          - -m
+          - '512'
+        resources:
+          limits:
+            cpu:  LIMIT_MAX_CPU
+            memory: LIMIT_MAX_MEM
+        ports:
+        - containerPort: APP_PORT
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: PROJECT_NAME
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: PROJECT_NAME
+  namespace: NAMESPACE
+spec:
+  selector:
+    app: PROJECT_NAME
+  ports:
+    - port: APP_PORT

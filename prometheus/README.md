@@ -1,4 +1,7 @@
-# Kubernetes Setup for Prometheus and Grafana
+# 根据他人prometheus的配置修改后的，作者的地址因长时间没有维护，在当下k8s版本有很多问题，这里调整的是manifests 目录下的配置
+
+
+## Kubernetes Setup for Prometheus and Grafana
 
 ## Quick start
 

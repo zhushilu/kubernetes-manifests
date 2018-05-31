@@ -99,7 +99,7 @@ data:
           - source_labels: [__address__]
             target_label: __param_target
           - target_label: __address__
-            replacement: blackbox
+            replacement: prometheus-blackbox:9115
           - source_labels: [__param_target]
             target_label: instance
           - action: labelmap
