@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tomcat-jmx
+#  namespace: comall
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tomcat-jmx
+    spec:
+      containers:
+      - name: tomcat-jmx
+        image: harbor.product.co-mall/platform/tomcat:7-jmx
+        ports:
+        - containerPort: 8080
+        - containerPort: 13234
+#    restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat-jmx
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '13234'
+#  namespace: comall
+spec:
+#  type: NodePort
+#  sessionAffinity: ClientIP
+  selector:
+    app: tomcat-jmx
+  ports:
+    - port: 8080
+      name: port1
+    - port: 13234
+      name: port2
+#      nodePort: 30080
+
+
