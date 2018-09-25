@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-default-univer-doclever
+spec:
+  rules:
+  - host: doclever.kube.univer
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: univer-doclever
+          servicePort: 10000
+

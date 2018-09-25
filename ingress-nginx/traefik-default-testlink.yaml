@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-default-univer-testlink
+spec:
+  rules:
+  - host: testlink.kube.univer
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: univer-testlink
+          servicePort: 80
+

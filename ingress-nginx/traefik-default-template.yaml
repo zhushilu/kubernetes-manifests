@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-univer-master-kauai-nginx
+  namespace: univer-production
+  annotations:
+#    traefik.frontend.entryPoints: http,https
+    traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+spec:
+  rules:
+  - host: beacon.univer.top
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kauai-nginx
+          servicePort: 80
+      - path: /clips_pic_craw
+        backend:
+          serviceName: kauai-nginx2
+          servicePort: 80

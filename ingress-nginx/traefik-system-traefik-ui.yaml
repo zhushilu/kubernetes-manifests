@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-system-traefik-ingress
+  namespace: kube-system
+  annotations:
+spec:
+  rules:
+  - host: traefik.kube.univer
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: traefik-ingress
+          servicePort: 8580

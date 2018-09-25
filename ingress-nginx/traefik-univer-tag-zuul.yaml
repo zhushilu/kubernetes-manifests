@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-univer-tag-tag-zuul
+  namespace: univer-tag
+  annotations:
+#    traefik.frontend.entryPoints: http,https
+#    traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+#    traefik.ingress.kubernetes.io/redirect-entry-point: https
+spec:
+  rules:
+  - host: zuul.kube.univer
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: tag-zuul
+          servicePort: 9021

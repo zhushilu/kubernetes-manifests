@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-elastic-dashboard
+  namespace: elastic-cluster
+spec:
+  rules:
+  - host: kibana.kube.univer
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kibana
+          servicePort: 80

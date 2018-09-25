@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-default-website
+spec:
+  rules:
+  - host: site.kube.univer
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: univerwebsite
+          servicePort: 80

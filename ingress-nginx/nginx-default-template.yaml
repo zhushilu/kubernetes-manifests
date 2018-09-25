@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-default-template
+  namespace: default
+spec:
+#  tls:
+#  - hosts:
+#    - template.kube.univer
+# 创建secret (kubectl create secret tls ingress-secret --key tls.key --cert tls.pem)
+#    secretName: ingress-secret
+  rules:
+  - host: template.kube.univer
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: template
+          servicePort: 80

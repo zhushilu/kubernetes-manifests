@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-default-univer-nexus3
+spec:
+  rules:
+  - host: nexus3.kube.univer
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: univer-nexus3
+          servicePort: 8081
+
