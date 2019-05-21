@@ -19,3 +19,6 @@ https://kubernetes.io/docs/tutorials/stateful-application/zookeeper/
 
 https://kubernetes.io/cn/docs/tutorials/stateful-application/zookeeper/
 
+
+#  zookeeper-statefulset.yaml
+https://github.com/zhushilu/contrib/tree/master/statefulsets/zookeeper

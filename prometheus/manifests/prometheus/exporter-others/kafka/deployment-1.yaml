@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: prometheus-kafka-1-exporter
+    component: kafka-1-exporter
+  name: prometheus-kafka-1-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-kafka-1-exporter
+      component: kafka-1-exporter
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9308"
+        prometheus.io/scrape: "true"
+      labels:
+        app: prometheus-kafka-1-exporter
+        component: kafka-1-exporter
+    spec:
+      containers:
+      - args:
+        - --kafka.server=kafka-1.kafka-svc.kafka.svc.cluster.local:9093
+        - --kafka.version=1.1.1
+        image: danielqsj/kafka-exporter:v1.2.0
+        imagePullPolicy: IfNotPresent
+        name: prometheus-kafka-1-exporter
+        ports:
+        - containerPort: 9308
+          name: http-metrics
+          protocol: TCP
+      restartPolicy: Always
